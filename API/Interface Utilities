@@ -1,0 +1,278 @@
+--[[
+    License: http://creativecommons.org/licenses/by/3.0/
+    Author: Engineer
+    Version: 0.2 PRE
+    Please credit me when you use this in your published work.
+
+    	Documentation:
+		
+	.bufferWrite( yourText [, textColor [, backgroundColor ].] )
+		It is added to the buffer, and ofcourse it just writes as normal. 
+		Optional text and background color.
+		Everything is added to the buffer.
+		It will overwrite if the starting point has the same coords.
+
+	.bufferPrint( yourText [, textColor [, backgroundColor ].] )
+		The same as write, but use print instead of write :P
+	
+	.bufferLine( xMin, yMin, xMax, yMax, lineColor)
+		Using the paintutils API, add the line to your buffer
+
+	.bufferSetColor( textColor, backgroundColor )
+		Set the main colors of your page
+	
+	.returnBuffer()
+		Returns the current buffer.
+		The buffer is one table with subtables in it, you most-likely dont need this, but it is added in
+
+	.bufferClear()
+		Delete all the contents of the buffer
+
+	.bufferButton( xMin, yMin, xMax, yMax [, backgroundColor [, yourText [, textColor].])
+		Add a graphicall button to the screen and buffer
+	
+	.createPage()
+		This will create the page from the current buffer. IT WILL NOT CLEAR THE BUFFER, and thats intentional. If you want to 
+		make two pages wich are similair, with only a slight change you can add this to a new page.
+
+	.loadPage( pageNumber )
+		Load all the contents of the created page
+
+	.loadBuffer()
+		Load the current buffer, just to check if you have what you want. It does not save to the pages table AND after a few
+		seconds a "Press enter to continue.." will appear
+]]--
+
+-- Main values
+local pages = {}
+local buffer = {}
+local realColors = {}
+local width, height = term.getSize()
+
+for i = 0, 15 do
+	realColors[tostring(2 ^ i)] = true
+end
+
+-- Check if the current x and y are already in use
+local check = function( xPos, yPos )
+	for i = 1, #buffer do
+		if buffer[i][1] == xPos and buffer[i][2] == yPos then
+			return i
+		end
+	end
+	return false
+end
+
+-- New write & print function. This is added to the buffer and doesnt overwrite print or write
+bufferWrite = function( sText, textColor, backgroundColor )
+	if type(sText) ~= "string" then error("Arg #1: String expected, got " .. type(sText) ) end
+	if not realColors[tostring(textColor)] and textColor then error("Arg #2: One-channel color expected") end
+	if not realColors[tostring(backgroundColor)] and backgroundColor then error("Arg #3: One-channel color expected") end
+	
+	local textColor = textColor or 1
+	local backgroundColor = backgroundColor or 32768
+	local x, y = term.getCursorPos()
+	
+	local returnType = check( x, y )
+	if type(returnType) == "boolean" then
+		buffer[#buffer + 1] = {"write", x, y, textColor, backgroundColor, sText}
+	elseif type(returnType) == "number" then
+		buffer[returnType] = {"write", x, y, textColor, backgroundColor, sText}
+	end
+end
+
+bufferPrint = function( sText, textColor, backgroundColor )
+	if type(sText) ~= "string" then error("Arg #1: String expected, got " .. type(sText) ) end
+	if not realColors[tostring(textColor)] and textColor then error("Arg #2: One-channel color expected") end
+	if not realColors[tostring(backgroundColor)] and backgroundColor then error("Arg #3: One-channel color expected") end
+	
+	local textColor = textColor or 1
+	local backgroundColor = backgroundColor or 32768
+	local x, y = term.getCursorPos()
+
+	local returnType = check( x, y )
+	if type(returnType) == "boolean" then
+		buffer[#buffer + 1] = {"print", x, y, textColor, backgroundColor, sText}
+	elseif type(returnType) == "number" then
+		buffer[returnType] = {"print", x, y, textColor, backgroundColor, sText}
+	end
+
+end
+
+-- Create a button
+bufferButton = function( xMin, yMin, xMax, yMax, backgroundColor, sText, textColor )
+	if type(xMin) ~= "number" then error("Arg #1: Number expected, got " .. type(xMin)) end
+	if type(yMin) ~= "number" then error("Arg #2: Number expected, got " .. type(yMin)) end
+	if type(xMax) ~= "number" then error("Arg #3: Number expected, got " .. type(xMax)) end
+	if type(yMax) ~= "number" then error("Arg #4: Number expected, got " .. type(yMax)) end
+	if xMax - xMin < 1 then error("Bad argument: xMin - xMax cant be below 1") end
+	if yMax - yMin < 1 then error("Bad argument: yMin - yMax cant be below 1") end
+	if xMin < 1 or xMin > width then error("Arg #1: Number out of screen values") end
+	if yMin < 1 or yMin > height then error("Arg #2: Number out of screen values") end
+	if xMax < 1 or xMax > width then error("Arg #3: Number out of screen values") end
+	if yMax < 1 or yMax > height then error("Arg #4: Number out of screen values") end
+	if type(sText) ~= "string" and sText then error("Arg #5: String expected, got " .. type(xMin)) end
+	if not realColors[tostring(textColor)] and textColor then error("Arg #6: One-channel color expected") end
+	if not realColors[tostring(backgroundColor)] and backgroundColor then error("Arg #7: One-channel color expected") end
+	if sText and sText:len() > (xMax - xMin + 1) * (yMax - yMin + 1) then error("Max characters: " .. (xMax - xMin + 1) * (yMax - yMin + 1)) end 
+
+	local textColor = textColor or 1
+	local backgroundColor = backgroundColor or 32768
+
+	buffer[#buffer + 1] = {"button", xMin, yMin, xMax, yMax, backgroundColor, sText, textColor}
+end
+
+-- lines using paintutils, added to the buffer
+bufferLine = function( xMin, yMin, xMax, yMax, lineColor)
+	if type(xMin) ~= "number" then error("Arg #1: Number expected, got " .. type(xMin)) end
+	if type(yMin) ~= "number" then error("Arg #2: Number expected, got " .. type(yMin)) end
+	if type(xMax) ~= "number" then error("Arg #3: Number expected, got " .. type(xMax)) end
+	if type(yMax) ~= "number" then error("Arg #4: Number expected, got " .. type(yMax)) end
+	if xMin < 1 or xMin > width then error("Arg #1: Number out of screen values") end
+	if yMin < 1 or yMin > height then error("Arg #2: Number out of screen values") end
+	if xMax < 1 or xMax > width then error("Arg #3: Number out of screen values") end
+	if yMax < 1 or yMax > height then error("Arg #4: Number out of screen values") end
+	if not realColors[tostring(lineColor)] then error("Arg #5: One-channel color expected") end
+
+	buffer[#buffer + 1] = {"paintutils", xMin, yMin, xMax, yMax, lineColor}
+end
+
+bufferSetColor = function( textColor, backgroundColor )
+	if not realColors[tostring(textColor)] and textColor then error("Arg #1: One-channel color expected") end
+	if not realColors[tostring(backgroundColor)] and backgroundColor then error("Arg #2: One-channel color expected") end
+
+	local temp = {}
+	local startNumb = #buffer[1] == 2 and 2 or 1
+
+	if #buffer == 2 then
+		temp[1] = buffer[2]
+	else
+		for i = startNumb, #buffer do
+			temp[#temp + 1] = buffer[i]
+		end
+	end
+
+	buffer = {}
+
+	buffer[1] = {textColor, backgroundColor}
+	for i = 1, #temp do
+		buffer[#buffer + 1] = temp[i]
+	end
+end
+
+-- returns the whole buffer into tables with the args of the called function included
+returnBuffer = function()
+	if #buffer == 0 then error("Buffer is empty") end
+
+	return buffer
+end
+
+-- Clear the buffer
+bufferClear = function()
+	buffer = {}
+end
+
+-- create a page
+createPage = function()
+	if #buffer == 0 then error("Buffer is empty") end
+
+	pages[#pages + 1] = {}
+	for _, v in pairs(buffer) do
+		pages[#pages][#pages[#pages] + 1] = v
+	end
+end
+
+returnPages = function()
+	return #pages
+end
+
+-- load the page with content
+loadPage = function( pageNumber )
+	if type(pageNumber) ~= "number" then error("Bad argument: String expected, got " .. type(pageNumber)) end
+	if pageNumber < 0 or pageNumber > #pages then error("Index argument out of bounds") end
+
+	local textCol, backgroundCol
+	if #pages[pageNumber][1] == 2 then
+		textCol = pages[pageNumber][1][1]
+		backgroundCol = pages[pageNumber][1][2]
+	end
+
+	local textColor = textCol or 1
+	local backgroundColor = backgroundCol or 32768
+
+	term.setBackgroundColor( backgroundColor )
+	term.clear()
+
+	for i = 1, #pages[pageNumber] do
+		local page = pages[pageNumber][i]
+		if page[1] == "write" or page[1] == "print" then
+			term.setCursorPos( page[2], page[3])
+			term.setTextColor( page[4] == 1 and textColor or page[4] )
+			term.setBackgroundColor( page[5] == 32768 and backgroundColor or page[5] )
+				
+			if page[1] == "write" then
+				write( page[6] )
+			elseif page[1] == "print" then
+				print( page[6] )
+			end
+		elseif page[1] == "button" then
+			term.setTextColor( page[8] or textColor )
+			term.setBackgroundColor( page[6] or backgroundColor )
+			for j = 1, page[5] - page[3] + 1 do
+				term.setCursorPos( page[2], j + page[3] - 1 ) 
+				write( string.rep(" ", page[4] - page[2] + 1) )
+			end
+			local setYpos = 0
+			local setXpos = page[2]
+            if page[6] then
+    			local count = #page[7] or 0
+    			for j = 1, count do
+    				term.setCursorPos( setXpos, page[3] + setYpos )
+    				setXpos = setXpos + 1
+    				write( string.sub( page[7], j, j ))
+    				if setXpos == page[4] + 1 then
+    					setYpos = setYpos + 1
+    					setXpos = page[2]
+    				end
+    			end
+            end
+		elseif page[1] == "paintutils" then
+			paintutils.drawLine( page[2], page[3], page[4], page[5], page[6] )
+		end
+	end
+end
+
+loadBuffer = function()
+	if #buffer == 0 then error("Buffer is empty!") end
+	createPage()
+
+	local page = returnPages()
+	loadPage( page )
+
+	sleep( 3 )
+	term.setCursorPos(1, 19)
+	write("Press enter to continue..")
+
+	while true do
+		local event, key = os.pullEvent("key")
+		if key == 28 then
+			break
+		end
+	end
+
+	term.setBackgroundColor( colors.black )
+	term.setTextColor( colors.white )
+	term.clear()
+	
+	term.setCursorPos(1, 1)
+
+	local temp = {}
+	for i = 1, pages - 1 do
+		temp[#temp + 1] = pages[i]
+	end
+
+	pages = {}
+	for i = 1, #temp do
+		pages[#pages + 1] = temp[i]
+	end
+end
