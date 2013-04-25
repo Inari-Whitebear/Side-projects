@@ -97,3 +97,7 @@ for i = 1, #commentContent do
 end
 
 content = temp
+
+-- Draw GUI
+local width, height = term.getSize()
+-- Stuff Im not in the mood for to make :P
