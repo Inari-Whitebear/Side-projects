@@ -1,0 +1,123 @@
+local bees = {
+  ["Species"] = { "Forest","Meadows","Common","Cultivated","Noble","Majestic","Imperial","Diligent","Unweary","Industrious","Steadfast","Valiant","Heroic","Sinister","Fiendish","Demonic","Modest","Frugal","Austere","Ender","Tropical","Exotic","Edenic","Wintry","Icy","Glacial","Frigid","Absolute","Leporine","Merry","Tipsy","Celebratory","Rural","Farmed","Marshy","Swamp","Boggy","Fungal","Fermented","Bovine","Caffeine","Citrus","Minty","Arid","Barren","Desolate","Decaying","Skeletal","Creepy","Rocky","Tolerant","Hardy","Resilient","Rusty","Corroded","Tarnished","Leaden","Lustered","Galvanized","Invincible","Impregnable","Resolute","Brazen","Fortified","Lustrous","Shining","Glittering","Precious","Valuable","Lapis","Sodalite","Pyrite","Bauxite","Cinnabar","Sphalerite","Emerald","Ruby","Sapphire","Olivine","Diamond","Unstable","Nuclear","Radioactive","Ancient","Primeval","Prehistoric","Relic","Fossiled","Resinous","Oily","Preserved","Distilled","Refined","Tarry","Elastic","Water","River","Ocean","Inked","Sweetened","Sugary","Fruity","Marbled","Roman","Greek","Classical","Embittered","Angry","Furious","Volcanic","Glowering","Viscous","Glutinous","Sticky","Malicious","Infectious","Virulent","Corrosive","Caustic","Acidic","Excited","Energetic","Ecstasic","Shadowed","Darkened","Abyssmal","Maroon","Saffron","Prussian","Natural","Ebony","Bleached","Sepia","Amber","Turquiose","Indigo","Slate","Azure","Lavender","Lime","Fuchsia","Ashen","Hungry","Starved","Ravenous","Dazed","Irrational","Delirious","Pulped","Spoiled","Decomposed","Wooden","Lumbered","Timbered","Jaded","Esoteric","Mysterious","Arcane","Charmed","Enchanted","Supernatural","Pupil","Scholarly","Savant","Stark","Aura","Ignis","Aqua","Solum","Preacantatio","Skulking","Brainy","Gossamer","Wispy","Batty","Ghastly","Aware","Vis","Pure","Flux","Node","Timely","Lordly","Doctoral" },
+  ["Branch"] = { "Common","Common","Common","Common","Noble","Noble","Noble","Industrious","Industrious","Industrious","Heroic","Heroic","Heroic","Infernal","Infernal","Infernal","Austere","Austere","Austere","Tropical","Tropical","Tropical","End","Frozen","Frozen","Frozen","Festive","Festive","Festive","Agrarian","Boggy","Barren","Barren","Barren","Hostile","Hostile","Hostile","Rocky","Rocky","Rocky","Rocky","Rusty","Rusty","Rusty","Rusty","Metallic","Metallic","Alloyed","Alloyed","Alloyed","Metallic","Precious","Precious","Precious","Precious","Mineral","Mineral","Mineral","Mineral","Mineral","Mineral","Gemstone","Gemstone","Gemstone","Gemstone","Gemstone","Nuclear","Nuclear","Nuclear","Historic","Historic","Historic","Historic","Fossilized","Fossilized","Fossilized","Fossilized","Refined","Refined","Refined","Refined","Aquatic","Aquatic","Aquatic","Aquatic","Saccharine","Saccharine","Saccharine","Agricultural","Agrarian","Agricultural","Agricultural","Agricultural","Agricultural","Boggy","Boggy","Boggy","Classical","Classical","Classical","Classical","Volcanic","Volcanic","Volcanic","Volcanic","Virulent","Virulent","Virulent","Viscous","Viscous","Viscous","Caustic","Caustic","Caustic","Energetic","Energetic","Energetic","Frozen","Frozen","Shadow","Shadow","Shadow","Primary","Primary","Primary","Primary","Primary","Primary","Primary","Secondary","Secondary","Secondary","Secondary","Secondary","Secondary","Secondary","Tertiary","Tertiary","Festive","Beastly","-","Metallic","Alloyed","Hungry","Hungry","Hungry","Confused","Confused","Confused","Forestry","Forestry","Forestry","Wooden","Wooden","Wooden","Arcane","Arcane","Arcane","Supernatural","Supernatural","Supernatural","Scholarly","Scholarly","Scholarly","Thaumic","Thaumic","Thaumic","Thaumic","Thaumic","Thaumic","Vis","Vis","Vis","Vis","Vis","Skulking","Skulking","Skulking","Skulking","Skulking","Skulking","Time","Time","Time" },
+  ["Resultant_Mutations"] = { "Forest Hive","Meadows Hive","Forest+Meadows","Common+Forest/Meadows","Common+Cultivated","Noble+Cultivated","Noble+Majestic","Common+Cultivated","Diligent+Cultivated","Dilligent+Unweary","Dungeons","Rare from hives-Dungeons","Steadfast+Valiant","Modest/Tropical+Cultivated (Nether)","Sinister+Cultivate","Sinister+Fiendish","Desert Hive","Modest+Sinister/Fiendish","Modest+Frugal","End Hive","Jungle Hive","Austere+Tropical","Exotic+Tropical","Snow Hive","Industrious+Wintry","Icy+Wintry","Wintry+Diligent","Ocean+Frogod","Meadows+Forest","Wintry+Forest","Wintry+Meadows","Austere+Excited","Meadows+Forest (Plains)","Wintry+Forest","Swamp Hive","Common+Marshy","Swamp+Marshy","Boggy+Swamp","Fruity+Rural","Water+Rural","Tropical+Rural","Modest+Farmed","Tropical+Farmed","Meadows+Modest","Common+Arid","Common+Barren","Desolate+Modest","Desolate+Frugal","Desolate+Austere","Rock Hive","Rocky+Diligent","Rocky+Tolerant","Tolerant+Hardy","Resilient+Diligent","Resilient+Diligent","Resilient+Diligent","Resilient+Diligent","Resilient+Unweary","Tarnished+Cultivated","Resilient+Ender","Noble+Resilient","Corroded+Tarnished","Corroded+Galvanized","Rusty+Fossiled","Resilient+Imperial","Rusty+Noble","Resolute+Noble","Glittering+Shiny","Glittering+Ender","Resilient+Water","Lapis+Diligent","Rusty+Sinister","Resilient+Diligent","Resilient+Sinister","Tarnished+Sinister","Lapis+Noble","Emerald+Austere","Emerald+Ocean","Emerald+Ender","Sapphire+Imperial","Austere+Rocky","Unstable+Rusty","Nuclear+Glittering","Noble+Diligent","Ancient+Noble","Primeval+Majestic","Prehistoric+Imperial","Primeval+Forest","Primeval+Marshy","Primeval+Modest","Primeval+Boggy","Oily+Industrious","Oily+Distilled","Refined+Fossiled","Refined+Resinous","Water Hive","Water+Common","Water+Common","Water+Ocean","Tropical+Diligent","Sweetened+Diligent","Sugary+Forest","Marbled","Marbled+Heroic","Marbled+Roman","Greek+Romean","Nether Hive","Embittered+Sinister","Angry+Sinister","Furious+Angry","Angry+Excited","Water+Exotic","Viscous+Exotic","Viscous+Glutinous","Sinister+Tropical","Malicious+Tropical","Malicious+Infectious","Virulent+Sticky","Corrosive+Fiendish","Corrosive+Caustic","Cultivated+Valiant","Excited+Valiant","Excited+Energetic","Rocky+Furious","Shadowy+Embittered","Shadowy+Darkened","Forest+Valiant","Meadows+Valiant","Water+Valiant","Tropical+Valiant","Rocky+Valiant","Wintry+Valiant","Marshy+Valiant","Maroon+Saffron","Forest+Prussian","Maroon+Prussian","Ebony+Bleached","Prussian+Bleached","Maroon+Bleached","Natural+Bleached","Indigo+Lavneder","Slate+Bleached","Arid+Rural","Barren+Hungry","Hungry+Starved","Arid+Edenic","Barren+Dazed","Dazed+Irrational","Unweary+Forest","Pulped+Decaying","Pulped+Decaying","Diligent+Forest","Diligent+Wooden","Wooden+Lumberes","Ender+Relic","Imperial/Heroic+Demonic","Esoteric+Ender","Esoteric+Mysterious","Diligent+Valiant","Charmed+Valiant","Charmed+Enchanted","Arcane+Enchanted","Pupil+Arcane","Pupil+Scholarly","Arcane+Supernatural","Stark+Air Shard","Stark+Fire Shard","Stark+Water Shard","Stark+Earth Shard","Stark+Vis Shard","Mysterious+Desolate","Skulking+Rotten","Skulking+Ancient","Gossamer+Cultivate","Skulking+Rocky","Skulking+Creepy","Demonic+Edenic","Aware+Arcane/Star","Vis+Edenic","Vis+Edenic","Vis+Vis","Industrious+Enchanted","Timely+Imperial","Timely+Lordly" },
+  ["Flower"] = { "Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Nether Wart","Nether Wart","Nether Wart","Cacti","Cacti","Cacti","Dragon Egg","Vines/Ferns","Vines/Ferns","Vines/Ferns","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Wheat","Wheat","Mushroom","Mushroom","Mushroom","Mushroom","Wheat","Wheat","Wheat","Wheat","Wheat","None","None","None","None","None","None","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Cobblestone","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Lily Pad","Lily Pad","Lily Pad","Lily PadReads","Reads","Reads","Flowers","Flowers","Flowers","Flowers","Nether Wart","Nether Wart","Nether Wart","Nether Wart","Nether Wart","Vines/Ferns","Vines/Ferns","Vines/Ferns","Vines/Ferns","Vines/Ferns","Vines/Ferns","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","-","-","-","-","-","-","-","-","-","-","Flowers","Flowers","Flowers","Flowers","Flowers","Flowers","Books","Books","Books","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Magic Flowers","Node","Purify Node","Fluxify Node","Node","Flowers","Flowers","Flowers", "unknown", "unknown", "unknown", "unknown"},
+  ["Comb"] = { "Honey","Honey","Honey","Honey","Dripping","Dripping","Dripping","Stringy","Stringy","Stringy","Cocoa","Cocoa","Cocoa","Simmering","Simmering","Simmering","Parched","Parched","Parched","Mysterious","Silky","Silky","Silky","Frozen","Frozen","Frozen","Frozen","Frozen","Silky","Frozen","Frozen","Honey","Wheaten","Wheaten","Mossy","Mossy","Mossy","Mossy","Wheaten","Wheaten","Wheaten","Wheaten","Wheaten","Barren","Barren","Barren","Barren","Barren","Barren","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Rocky","Barren","Barren","Barren","Ancient","Ancient","Ancient","Ancient","Ancient","Ancient","Ancient","Ancient","Oily","Oily","Oily","Oily","Wet","Wet","Wet","Wet","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Simmering","Simmering","Simmering","Simmering","Simmering","Silky","Silky","Silky","Silky","Silky","Silky","Silky","Silky","Silky","Glowing","Glowing","Glowing","Shadow","Shadow","Shadow","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Honey","Barren","Barren","Barren","Silky","Silky","Silky","Pulped","Spoiled","Decomposed","Dusty","Dusty","Dusty","Honey","Occult","Occult","Occult","Otherworldly","Otherworldly","Otherworldly","Papery","Papery","Papery","Stark","Airy","Fiery","Watery","Earthy","Infused","Furtive","Furtive","Silky","Silky","Furtive","Furtive","Memory","Memory","Memory","Memory","Memory","Dripping","Dripping","Dripping" },
+  ["Comb2"] = { "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","Powdery","-","-","-","-","-","-","-","-","Glacial","-","-","-","-","-","Seedy","-","-","-","Fungal","Alcoholic","Milky","Coffee","Citrus","Mint","-","-","-","Rotten","Skeletal","Powdery","-","-","-","-","Iron","Copper","Tin","Leaden","Nickle","Zinc","Tungsten","Titanium","Bronze","Brazen","Steel","Invar","Silver","Golden","Electrum","Platinum","Lapis","Sodalite","Pyrite","Bauxite","Cinnibar","Sphalerite","Emerald","Ruby","Sapphire","Olivine","Diamond","-","-","Radioactive","-","-","-","-","Fossilized","Amber","Oily","Peat","-","Petroleum","Tar","Latex","-","Clay","-","-","-","-","Fruity","-","-","-","-","-","-","-","Blazing","Glowing","-","-","Mucous","-","-","Venomous","-","-","Brimstone","-","-","Static","-","-","-","Marroon","Saffron","Prussian","Forest","Ebony","Bleached","Sepia","Amber","Turquoise","Indigo","Slate","Azure","Lavender","Lime","Fuchsia","Ashen","-","-","-","-","-","-","-","-","-","-","-","-","Indigo","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","Mysterious","Mysterious" },
+  ["Other_Production"] = { "-","-","-","-","-","-","Royal Jelly","-","-","Pollen","-","Sugar","-","-","Ash","Glowstone","-","-","-","-","-","-","-","-","Ice Shard","Ice Shard","-","-","Egg","Ice Shard","Ice Shard","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","Ink Sack","Sugar","Sugar","Sugar","-","-","-","Royal Jelly","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","Pollen","-","-","Enchanting Drop","-","-","Unusual Pollen","-","Lore Fragment","Lore Fragment","-","Quicksilver","Blaze Powder","Ice/Crystalline Pollen","Amber","-","-","Zombie Brain/Rotten Flesh","-","Silk Wisp","Gunpowder","Ghast Teary","-","-","-","-","-","Phased Pollen","Phased Pollen","Handful of Jelly Babies" }
+}
+
+local width, height = term.getSize()
+local subWidth = math.floor( width / 3 ) + 2
+local currSelected = ""
+local offset = 0
+local tOffset = 0
+local tContent = {}
+
+local drawContainer = function()
+	term.clear()
+
+	paintutils.drawLine( 1, 1, subWidth, 1, colours.grey )
+	paintutils.drawLine( 1, height, subWidth, height, colours.grey )
+	paintutils.drawLine( 1, 1, 1, height, colours.grey )
+	paintutils.drawLine( subWidth, 1, subWidth, height, colours.grey )
+
+	term.setBackgroundColour( colours.black )
+	for i = 2, height - 1 do
+		write( string.rep( " ", subWidth - 1) )
+	end
+
+	term.setBackgroundColor( colours.white )
+	for i = 1, height do
+		term.setCursorPos( subWidth + 1, i)
+		write( string.rep(" ", width - subWidth) )
+	end
+end
+
+local drawContent = function( scrollValue, mode )
+	if mode == "bees" then
+		term.setTextColour( colours.yellow )
+		term.setBackgroundColor( colours.black )
+		for i = 2, height - 1 do
+			term.setCursorPos( 2, i )
+			if bees.Species[scrollValue + i - 1] == currSelected then
+				term.setBackgroundColour( colours.white )
+				term.setTextColour( colours.black )
+			else
+				term.setBackgroundColour( colours.black )
+				term.setTextColour( colours.yellow )
+			end
+			write( scrollValue + i - 1 .. ": " .. bees.Species[scrollValue + i - 1] .. string.rep(" ", subWidth - 4 - tostring( scrollValue + i - 1):len() - #bees.Species[scrollValue + i - 1]) )
+		end
+	elseif mode == "info" and currSelected:len() > 0 then
+		local subWrite = function( sText )
+			local lText = sText:len()
+			local maxLength = width - subWidth 
+
+			write( lText >= maxLength - 1 and sText:sub(1, maxLength - 4) .. ".." or sText )
+			local x, y = term.getCursorPos()
+			write( string.rep(" ", width - x) )
+		end
+
+		term.setBackgroundColour( colours.white )
+		term.setTextColour( colours.black )
+
+		for i = 2, 8 do
+			term.setCursorPos( subWidth + 2, i )
+			subWrite( tContent[ scrollValue + i - 1] )
+		end
+	end
+end
+
+local drawSelected = function( scrollValue, yCoord )
+	currSelected = ""
+	drawContent( offset, "bees" )
+
+	term.setBackgroundColour( colours.white )
+	term.setTextColour( colours.black )
+
+	term.setCursorPos( 2, yCoord )
+	write( scrollValue + yCoord - 1 .. ": " .. bees.Species[scrollValue + yCoord - 1] .. string.rep(" ", subWidth - 4 - tostring( scrollValue + yCoord - 1):len() - #bees.Species[scrollValue + yCoord - 1]) )
+	
+	currSelected = bees.Species[scrollValue + yCoord - 1]
+	tContent = {}
+	tContent[#tContent + 1] = "Current selected: " .. currSelected 
+	tContent[#tContent + 1] = "Branch: " .. bees.Branch[scrollValue + yCoord - 1]
+	tContent[#tContent + 1] = "Mutations: " .. bees.Resultant_Mutations[scrollValue + yCoord - 1]
+	tContent[#tContent + 1] = "Flower: " .. bees.Flower[scrollValue + yCoord - 1]
+	tContent[#tContent + 1] = "Comb: " .. bees.Comb[scrollValue + yCoord - 1]
+	tContent[#tContent + 1] = "Comb 2: " .. bees.Comb2[scrollValue + yCoord - 1]
+	tContent[#tContent + 1] = "Misc Production: " .. bees.Other_Production[scrollValue + yCoord - 1]
+
+	drawContent( tOffset, "info")
+end
+
+drawContainer()
+drawContent( 0, "bees" )
+
+while true do
+	local event = {os.pullEvent()}
+	if event[1] == "mouse_scroll" then
+		if event[3] >= 1 and event[3] <= subWidth - 1 and event[4] >= 1 and event[4] <= height then
+			if event[2] == -1 and offset - 1 >= 0 then
+				offset = offset - 1
+			elseif event[2] == 1 and offset + 1 ~= 184 - height + 3 then
+				offset = offset + 1
+			end
+			drawContent( offset, "bees" )
+		elseif event[3] >= subWidth + 1 and event[3] <= width and height < 8 then
+			local maX = 7 - height + 3 < 0 and -1 or 7 - height + 3
+			if event[2] == -1 and tOffset - 1 >= 0 then
+				tOffset = tOffset - 1
+			elseif event[2] == 1 and tOffset + 1 ~= maX then
+				tOffset = tOffset + 1
+			end
+			drawContent( tOffset, "info" )
+		end
+	elseif event[1] == "mouse_click" then
+		if event[3] > 1 and event[3] < subWidth and event[4] > 1 and event[4] < height then
+			drawSelected( offset, event[4] )
+		end
+	end
+end

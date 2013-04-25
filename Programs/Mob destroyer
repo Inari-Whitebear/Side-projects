@@ -1,0 +1,38 @@
+local junkItem = true
+local count = 0
+
+term.clear()
+term.setCursorPos(1,1)
+
+print("Welcome to Engineer's mob destroyer!")
+
+if turtle.getItemCount(1) == 0  and junkItem == true then
+	print("Put in slot 1 your 'junk' item")
+	while true do
+		if turtle.getItemCount(1) > 0 then
+			break
+		end
+		sleep(0)
+	end
+end
+
+while true do
+	turtle.select(2)
+	turtle.attack()
+	if turtle.getItemCount(16) > 0 then
+		for i = 2, 16 do
+			local counter = turtle.getItemCount(i)
+			count = count + counter
+			term.setCursorPos(1,4)
+			term.clearLine()
+			print("Loots collected: "..count)
+			turtle.select(i)
+			if turtle.compareTo(1) then
+				turtle.dropDown()
+			else
+				turtle.dropUp()
+			end
+		end
+	end
+	sleep(.5)
+end

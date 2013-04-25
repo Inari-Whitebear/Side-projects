@@ -1,0 +1,229 @@
+local sPath = shell.getRunningProgram()
+--[[if sPath ~= "startup" then
+	if not fs.exists("/startup") then
+		fs.move(sPath, "/startup")
+	else
+		fs.move("/startup", "/prevStartupProgram")
+	end
+end]]--
+if not term.isColor then
+	error("Color not supported on this computer")
+end
+local side
+for k,v in pairs(rs.getSides()) do
+	if peripheral.isPresent(v) then
+		if peripheral.getType(v) == "monitor" then
+			side = v
+			break
+		end
+	end
+end
+
+local quantity = {
+        [4] = 0,
+        [5] = 0,
+        [6] = 0,
+        [7] = 0,
+        [8] = 0,
+        [9] = 0,
+        [10] = 0,
+        [11] = 0,
+        [12] = 0,
+        [13] = 0,
+        [14] = 0,
+        [15] = 0,
+        [16] = 0
+}
+local currPrice = {
+        [4] = {0, 0.1},
+        [5] = {0, 10},
+        [6] = {0, 15},
+        [7] = {0, 15},
+        [8] = {0, 15},
+        [9] = {0, 20},
+        [10] = {0, 25},
+        [11] = {0, 25},
+        [12] = {0, 25},
+        [13] = {0, 30},
+        [14] = {0, 30},
+        [15] = {0, 30},
+        [16] = {0, 50},
+}
+ 
+local total = 0
+local stack = false
+ 
+function setZero()
+	for i = 4, 16 do
+		currPrice[i][1] = 0
+		quantity[i] = 0
+		total = 0
+	end
+end
+function printGUI()
+	local gui = {
+	[[+-------------+--------+----------+-------[Reset]-+]],
+	[[| Item        |        | Quantity | Price         |]],
+	[[+-------------+--------+----------+---------------+]],
+	[[|Cobblestone  |  +  -  |          |              C|]],
+	[[|Coal         |  +  -  |          |              C|]],
+	[[|Iron ingot   |  +  -  |          |              C|]],
+	[[|Tin ingot    |  +  -  |          |              C|]],
+	[[|Copper ingot |  +  -  |          |              C|]],
+	[[|Redstone Dust|  +  -  |          |              C|]],
+	[[|GreenSapphire|  +  -  |          |              C|]],
+	[[|Blue Sapphire|  +  -  |          |              C|]],
+	[[|Ruby         |  +  -  |          |              C|]],
+	[[|Uranium      |  +  -  |          |              C|]],
+	[[|Logs         |  +  -  |          |              C|]],
+	[[|Gold ingot   |  +  -  |          |              C|]],    
+	[[|Diamond      |  +  -  |          |              C|]],
+	[[+-------------+--------+----------+---------------+]],
+	[[|                      | Total:   |              C|]],
+	[[+-------------------------------------------------+]]
+	}
+	term.setTextColor(colors.white)
+	for i = 1, 19 do
+		term.setCursorPos(1, i)
+		write(gui[i])
+	end
+	for i = 4, 16 do
+		term.setCursorPos(25, i)
+		write(quantity[i])
+		term.setCursorPos(36, i)
+		write(currPrice[i][1])
+	end
+	term.setCursorPos(36, 18)
+	write(total)
+	term.setCursorPos(17, 2)
+	if stack then
+		term.setTextColor(colors.lime)
+		write("64")
+		term.setTextColor(colors.red)
+		write("  1")
+	else
+		term.setTextColor(colors.red)
+		write("64")
+		term.setTextColor(colors.lime)
+		write("  1")
+	end
+	term.setTextColor(colors.white)
+end
+ 
+if side then
+	local m = peripheral.wrap(side)
+	m.clear()
+	local function mwrite(str, yPos, xPos)
+		local x, y = m.getCursorPos()
+		xP = xPos or 1
+		yP = yPos or y + 1
+		m.setCursorPos(xP, yP)
+		m.write(str)
+	end
+	
+	local width, height = m.getSize()
+	m.setBackgroundColor(colors.yellow)
+	m.setTextColor(colors.red)
+	if width == 29 and height == 19 then
+		mwrite([[+--------------+------------+]], 2)
+		mwrite([[| Item         | Price      |]])
+		mwrite([[+--------------+------------|]])
+		mwrite([[|Cobblestone   |           C|]])
+		mwrite([[|Coal          |           C|]])
+		mwrite([[|Iron ingot    |           C|]])
+		mwrite([[|Tin ingot     |           C|]])
+		mwrite([[|Copper ingot  |           C|]])
+		mwrite([[|Redstone Dust |           C|]])
+		mwrite([[|Green Sapphire|           C|]])
+		mwrite([[|Blue Sapphire |           C|]])
+		mwrite([[|Ruby          |           C|]])
+		mwrite([[|Uranium       |           C|]])
+		mwrite([[|Logs          |           C|]])
+		mwrite([[|Gold ingot    |           C|]])  
+		mwrite([[|Diamond       |           C|]])
+		mwrite([[+--------------+------------+]])
+		for i = 4, 16 do
+			mwrite(currPrice[i][2], i + 1, 18)
+		end
+		term.redirect(m)
+		paintutils.drawLine(1, 1, 29, 1, colors.yellow)
+		paintutils.drawLine(1, 19, 29, 19, colors.yellow)
+		term.restore()
+	else
+		error("Screen must be 3x3")
+	end
+end
+while true do
+	printGUI()
+	--button for debugging
+	local evt, button, x, y = os.pullEvent()
+	if evt == "key" then
+		if  button == 19 then
+			setZero()
+		elseif button == 29 then
+			local version = os.version()
+			term.clear()
+			term.setCursorPos(1,1)
+			print(version)
+			error()
+		end
+	elseif evt == "mouse_click" then
+		--The resetter
+		if x > 42 and x < 50 and y == 1 then        
+			setZero()
+		--The stack button
+		elseif x > 14 and x < 25 and y > 0 and y < 4 then
+			if stack then
+				stack = false
+			else
+				stack = true
+			end
+		--First all the + keys
+		elseif x > 16 and x < 20 then      
+			for i = 4, 16 do
+				if i == y then
+					if not stack then
+						total = total + currPrice[i][2]
+						currPrice[i][1] = currPrice[i][1] + currPrice[i][2]
+						quantity[i] = quantity[i] + 1
+					else
+						total = total + (currPrice[i][2] * 64)
+						currPrice[i][1] = currPrice[i][1] + (currPrice[i][2] * 64)
+						quantity[i] = quantity[i] + 64
+					end
+				break
+				end
+			end
+		-- Secondly all the - keys
+		elseif x > 19 and x < 23 then
+			for i = 4, 16 do
+				if i == y then
+					button = (i.." - ")
+					if quantity[i] - 1 < 0 or (stack and quantity[1] == 0) then
+						break
+					end
+					if not stack then	
+						quantity[i] = quantity[i] - 1
+						total = total - currPrice[i][2]
+						currPrice[i][1] = currPrice[i][1] - currPrice[i][2]
+					else
+						if quantity[i] - 64 < 0 then
+							currPrice[i][1] = 0
+							total = total - (currPrice[i][2] * quantity[i])
+							quantity[i] = 0
+						else
+							currPrice[i][1] = currPrice[i][1] - (currPrice[i][2] * 64)
+							total = total - (currPrice[i][2] * 64)
+							quantity[i] = quantity[i] - 64
+						end
+					end
+					if quantity[4] == 0 then
+						currPrice[4][1] = math.floor(currPrice[4][1])
+						total = math.floor(total)
+					end
+					break
+				end
+			end
+		end
+	end
+end
