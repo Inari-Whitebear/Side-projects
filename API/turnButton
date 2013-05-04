@@ -1,0 +1,63 @@
+local vColor = {}
+local sides = {}
+for i = 0, 15 do vColor[2 ^ i] = true end
+for _, side in pairs(rs.getSides()) do sides[side] = true end
+
+local buttons = {}
+local padding = -1
+
+local colError = function( argument, nArgument )
+	if type( argument ) ~= "string" and type( argument ) ~= "number" then error("Bad argument #"..nArgument..": String or number expected, got " .. type( argument )) end
+	if type( argument ) == "string" and not colors[argument] then error("#"..nArgument..": Not a valid color.", 2) end
+	if type( argument ) == "number" and not vColor[argument] then error("#"..nArgument..": Not a valid color.", 2) end
+	return type( argument ) == "string" and colors[argument] or argument
+end
+
+local fillBox = function( tX, tY, bX, bY, bgColor, obj )
+	if obj then term.redirect( obj ) end
+
+	term.setBackgroundColor( bgColor )
+	term.setCursorPos( tX, tY )
+	for i = 0, bY - tY - 1 do
+		for j = 0, bX - tX - 1 do
+			term.setCursorPos( tX + j, tY + i )
+			write( " " )
+		end
+	end
+	term.restore()
+end
+
+setButton = function( side, outputColor, colorOn, colorOff, text, textColor )
+	if type(text) ~= "string" and text then error("Bad argument #4: String expected, got " .. type( text ), 2) end
+	if type(side) ~= "string" and text then error("Bad argument #1: String expected, got " .. type( side ), 2) end
+	if not sides[side] then error("#1: Side expected.", 2) end
+
+	local outputColor = colError( outputColor, 2)
+	local colorOn = colError( colorOn, 3)
+	local colorOff = colError( colorOff, 4)
+	local textColor = textColor and nil or colError( textColor, 6)
+
+	buttons[#buttons].oColor = outputColor
+	buttons[#buttons + 1] = {}
+	buttons[#buttons].tColor = colorOn
+	buttons[#buttons].fColor = colorOff
+	buttons[#buttons].sText = text or ""
+	buttons[#buttons].sColor  = textColor or 1
+end
+
+setFuntion = function( nFunction )
+	if type(nFunction) ~= "function" and func then error("Bad argument: Function expected, got " .. type( nFunction ), 2) end
+
+	buttons[#buttons].func = tFunction
+end
+
+setPadding = function( nPadding )
+	if type( nPadding ) ~= "number" then error("Bad argument: Number expected, got " .. type( nPadding ), 2) end
+	if nPadding < 0 then error("Argument must be postive, 0 is allowed.", 2) end
+
+	padding = nPadding
+end
+
+render = function()
+
+end
