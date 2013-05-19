@@ -46,36 +46,33 @@ local cards = { -- Assuming screen is atleast 19 high and a width of 51 px
 	}
 }
 
+local writeShapeLine = function( x, y, shape, line )
+	term.setCursorPos( x, y )
+	write( shape[line] )
+end
+
 term.setBackgroundColor( colors.white )
 term.clear()
 
-local extraSpaceW = width % 11
-local amountW =  math.floor( (width - extraSpaceW) / 11 )
-local extraSpaceH = height % 12 == 0 and (height - 1) % 12 or height % 12
-local amountH = math.floor( (height - extraSpaceH) / 12 )
+local amountW =  math.floor( width / 11 )
+local amountH = math.floor( height / 12 )
 
 for i = 1, amountH * 12, 12 do
 	for j = 1, amountW * 11, 11 do
 		term.setTextColor( colors.black )
-		for k = 0, 11 do
-			term.setCursorPos(j, i + k)
-			write( cards.closed_stacked_outline[k + 1] )
+		for k = 1, #cards.closed_stacked_outline do
+			writeShapeLine( j, i + k - 1, cards.closed_stacked_outline, k )
 		end
 		term.setTextColor( colors.red )
-		term.setCursorPos( j + 1, i + 1 )
-		write( cards.closed_stacked_inside[1] )
-		term.setCursorPos( j + 2, i + 3 )
-		write( cards.closed_stacked_inside[1] )
-		term.setCursorPos( j + 3, i + 5 )
-		write( cards.closed_stacked_inside[1] )
-		term.setCursorPos( j + 4, i + 7 )
-		write( cards.closed_stacked_inside[1] )
-		term.setCursorPos( j + 4, i + 8 )
-		write( cards.closed_stacked_inside[2] )
-		term.setCursorPos( j + 4, i + 9 )
-		write( cards.closed_stacked_inside[2] )
-		term.setCursorPos( j + 4, i + 10 )
-		write( cards.closed_stacked_inside[1] )
+		for k = 1, 3, 1 do
+			writeShapeLine( j + k, i + 1 + ( ( k - 1 ) * 2 ), cards.closed_stacked_inside, 1 )
+		end
+
+		writeShapeLine( j + 4, i + 7, cards.closed_stacked_inside, 1 )
+		writeShapeLine( j + 4, i + 8, cards.closed_stacked_inside, 2 )
+		writeShapeLine( j + 4, i + 9, cards.closed_stacked_inside, 2 )
+		writeShapeLine( j + 4, i + 10, cards.closed_stacked_inside, 1 )
+
 	end
 end
 
